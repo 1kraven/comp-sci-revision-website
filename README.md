@@ -1,49 +1,64 @@
-# 5004CMD Data Science Revision Lab
+# Computer Science Revision App
 
-A small revision website built around the 6 datasets in the `datasets` folder for 5004CMD Data Science exam practice.
+Browser-based revision app for two Coventry University modules:
 
-## What It Includes
+- `5002CMD` Advanced Algorithms
+- `5004CMD` Data Science
+
+## Features
+
+### Module Switching
+
+- Sidebar navigation lets you switch between `5002CMD` and `5004CMD`.
+- Each module has its own dashboard, flashcards, mock exams, and answered history.
+- History filtering and deck/exam generation are scoped to the currently selected module.
 
 ### Dashboard
-- Shows all 6 datasets used in the revision site.
-- Clicking a dataset opens a read-only spreadsheet-style viewer.
-- The viewer shows the full dataset inside the website so you can inspect columns and values without editing anything.
+
+- `5004CMD` shows dataset cards and preview access for the six revision datasets.
+- `5002CMD` shows topic cards for the algorithms revision areas.
+- The dashboard header includes live counts for item coverage, flashcards available, and exam questions available.
 
 ### Flashcards
-- Dataset-based revision cards focused on understanding the data, interpretation, modelling ideas, common mistakes, and key exam points.
-- Flashcards are not meant to be code-writing drills.
-- You can generate decks for one dataset or across all datasets.
-- The site tries not to repeat flashcards until the question pool has been cycled.
+
+- Generate decks by focus area or from the full module pool.
+- Deck sizes are configurable in the UI.
+- Questions stay non-repeating until the stored pool for that scope has been cycled.
+- Flashcards are self-marked as right or wrong and saved into local history when submitted.
 
 ### Mock Exams
-- Step-by-step exam-style questions based on the datasets.
-- Questions are designed to resemble common university mock-exam structure:
-  - read the dataset
-  - inspect rows
-  - check missing values
-  - check duplicates
-  - show summary statistics
-  - define `X` and `y`
-  - split train/test data
-  - fit a model
-  - evaluate the model
-  - visualise results
-  - interpret results
-- Each mock exam can be generated for one dataset or across all datasets.
-- Questions are auto-marked immediately after submission.
+
+- Generate auto-marked mock exams by focus area or from all topics/datasets.
+- Questions are marked immediately after submission.
+- Different answer types are supported, including:
+  - short answers
+  - keyword-based answers
+  - code/pseudocode answers
+  - multipart questions
+  - table-style worksheet questions
+- Hints and visual figures are included where relevant.
+
+### Actual Mock Mode
+
+- `5002CMD` uses paper-style mock papers built from fixed section patterns.
+- The app currently rotates among 8 prepared `5002CMD` actual-mock paper patterns.
 
 ### Answered History
-- Stores previous flashcard decks and mock exams in the browser.
-- Shows:
-  - what questions appeared
-  - what you answered
-  - the correct answer
-  - your score
-- Also tells you if a flashcard or exam question has appeared before.
 
-## Datasets Covered
+- Every submitted flashcard deck and mock exam is stored in browser local storage.
+- History can be filtered to show all attempts, flashcards only, or mock exams only.
+- Selecting an attempt shows:
+  - completion time
+  - score
+  - each question
+  - your saved answer
+  - the expected answer
+- Multipart and table answers are stored and rendered in structured form for review.
+- Repeated questions can show a notice that they have appeared before or have been answered before.
 
-The site uses these 6 datasets:
+## 5004CMD Dataset Coverage
+
+The `5004CMD` side of the app is built around these six datasets:
 
 1. `HousePricePrediction.csv`
 2. `Weather-data.csv`
@@ -52,27 +67,10 @@ The site uses these 6 datasets:
 5. `googleplaystore.csv`
 6. `housing.csv`
 
-## Question Coverage
+These files are stored in the top-level `datasets/` folder.
 
-The exact numbers can vary slightly as the pools evolve, but the site currently includes:
+## How To Run
 
-- A large flashcard bank across all 6 datasets
-- A large mock-exam bank across all 6 datasets
-- Multiple question variants per dataset
-- Mixed all-dataset exams and dataset-specific exams
-
-The website metrics on the dashboard show the current total number of flashcards and mock-exam questions available.
-
-## How It Works
-
-1. Open `index.html` in the `cards` folder.
-2. Use `Dashboard` to inspect the datasets.
-3. Use `Flashcards` for concept revision.
-4. Use `Mock Exams` for code-style practice.
-5. Use `Answered History` to review mistakes and repeated questions.
-
-## Notes
-
-- All history is stored locally in the browser.
-- The dataset viewer is read-only.
-- Mock exam code answers are displayed in a separate code style in results/history to make them easier to compare.
+1. Open `cards/index.html` in a browser.
+2. Choose a module from the left sidebar.
+3. Use `Dashboard`, `Flashcards`, `Mock Exams`, and `Answered History` as needed.
