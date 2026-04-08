@@ -24,7 +24,8 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   color: var(--text);
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
   background:
@@ -47,10 +48,14 @@ textarea {
 .app-shell {
   display: grid;
   grid-template-columns: 320px 1fr;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
   padding: 28px 24px;
   background: rgba(25, 34, 28, 0.94);
   color: #f8f3e8;
@@ -82,6 +87,23 @@ textarea {
 .nav-links {
   display: grid;
   gap: 10px;
+}
+
+.module-nav {
+  display: grid;
+  gap: 18px;
+}
+
+.module-group {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.module-heading h2 {
+  margin: 6px 0 14px;
+  font-size: 1.4rem;
 }
 
 .nav-link {
@@ -116,6 +138,8 @@ textarea {
 }
 
 .main-content {
+  height: 100vh;
+  overflow-y: auto;
   padding: 28px;
 }
 
@@ -126,6 +150,15 @@ textarea {
 
 .view.active {
   display: block;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .hero,
@@ -351,6 +384,21 @@ button:hover {
   padding: 20px;
 }
 
+.loading-stack {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.loading-spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 4px solid rgba(29, 107, 87, 0.18);
+  border-top-color: var(--accent);
+  animation: spin 0.85s linear infinite;
+}
+
 .hidden {
   display: none !important;
 }
@@ -439,6 +487,108 @@ button:hover {
   gap: 14px;
 }
 
+#examForm.paper-mode .session-topbar {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.96) 0%, rgba(248, 249, 244, 0.96) 100%);
+}
+
+#examForm.paper-mode .exam-questions {
+  gap: 18px;
+}
+
+.mock-paper-header {
+  padding: 26px 28px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  box-shadow: var(--shadow);
+}
+
+.mock-paper-header h3 {
+  margin: 8px 0 14px;
+  font-size: 2rem;
+}
+
+.mock-paper-code {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-strong);
+}
+
+.mock-paper-org {
+  margin: 0 0 16px;
+  line-height: 1.7;
+}
+
+.mock-paper-meta {
+  display: grid;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.mock-paper-meta p {
+  margin: 0;
+}
+
+.figure-panel {
+  margin: 0 0 16px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  overflow-x: auto;
+}
+
+.figure-panel svg {
+  width: 100%;
+  height: auto;
+  min-width: 280px;
+}
+
+.algorithm-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.number-strip {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(42px, 1fr));
+  border: 1px solid var(--line);
+}
+
+.number-strip span {
+  padding: 10px 8px;
+  border-right: 1px solid var(--line);
+  background: #fffdf8;
+  text-align: center;
+  font-weight: 700;
+}
+
+.number-strip span:last-child {
+  border-right: 0;
+}
+
+.hint-actions {
+  margin: 0 0 14px;
+}
+
+.hint-box {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(29, 107, 87, 0.18);
+  background: rgba(29, 107, 87, 0.08);
+}
+
+.hint-box p:last-child {
+  margin-bottom: 0;
+}
+
 .review-item,
 .question-card,
 .history-question {
@@ -466,6 +616,65 @@ button:hover {
   margin: 0 0 10px;
 }
 
+.paper-question {
+  padding: 20px;
+  background: #fffdf8;
+}
+
+.paper-question h4 {
+  font-size: 1.2rem;
+  line-height: 1.45;
+}
+
+.multipart-block {
+  display: grid;
+  gap: 16px;
+}
+
+.multipart-item {
+  display: grid;
+  gap: 8px;
+}
+
+.multipart-label,
+.multipart-prompt {
+  margin: 0;
+}
+
+.multipart-label {
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+.multipart-answer-list {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.multipart-answer-item {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.multipart-answer-item p {
+  margin: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.multipart-answer-text {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 .dataset-preview {
   margin-bottom: 16px;
   padding: 16px;
@@ -491,6 +700,99 @@ button:hover {
   border: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
+}
+
+.worksheet-wrap {
+  overflow-x: auto;
+  margin: 0 0 16px;
+}
+
+.worksheet-table {
+  min-width: 760px;
+}
+
+.worksheet-table td:first-child,
+.worksheet-table th:first-child {
+  width: 30%;
+}
+
+.worksheet-input {
+  width: 100%;
+  min-width: 120px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  color: var(--text);
+  font: inherit;
+}
+
+.worksheet-input:focus {
+  outline: 2px solid rgba(29, 107, 87, 0.18);
+  border-color: var(--accent);
+}
+
+.worksheet-answer-wrap {
+  margin: 8px 0 0;
+}
+
+.sigma-expression {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sigma-bounds {
+  display: inline-grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.sigma-upper,
+.sigma-lower {
+  font-size: 0.72rem;
+}
+
+.sigma-symbol {
+  font-size: 2rem;
+  line-height: 0.85;
+}
+
+.sigma-term {
+  font-size: 1rem;
+}
+
+.math-inline {
+  white-space: nowrap;
+}
+
+.math-inline sup {
+  font-size: 0.78em;
+  line-height: 0;
+}
+
+.fraction-expression {
+  display: inline-grid;
+  justify-items: center;
+  align-items: center;
+  white-space: nowrap;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.05;
+}
+
+.fraction-numerator,
+.fraction-denominator {
+  padding: 0 4px;
+}
+
+.fraction-bar {
+  width: 100%;
+  min-width: 72px;
+  border-top: 1.5px solid currentColor;
+  margin: 2px 0;
 }
 
 .preview-table th {
@@ -567,8 +869,14 @@ button:hover {
   margin: 0 0 8px;
 }
 
+.history-question {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .history-detail {
   min-height: 300px;
+  min-width: 0;
 }
 
 .history-detail .review-item {
@@ -577,6 +885,7 @@ button:hover {
 
 .history-detail .review-list {
   gap: 18px;
+  min-width: 0;
 }
 
 .answer-block {
@@ -604,6 +913,43 @@ button:hover {
   line-height: 1.55;
 }
 
+.numbered-code {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f5f6f1;
+  overflow: hidden;
+}
+
+.numbered-code-row {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  border-top: 1px solid rgba(31, 36, 31, 0.08);
+}
+
+.numbered-code-row:first-child {
+  border-top: 0;
+}
+
+.numbered-code-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  background: rgba(29, 107, 87, 0.08);
+  border-right: 1px solid rgba(31, 36, 31, 0.08);
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.numbered-code-text {
+  display: block;
+  padding: 8px 12px;
+  white-space: pre-wrap;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.95rem;
+}
+
 .empty-answer {
   width: 100%;
   max-width: 100%;
@@ -613,6 +959,7 @@ button:hover {
   background: rgba(255, 255, 255, 0.72);
   color: var(--muted);
   font-style: italic;
+  overflow-wrap: anywhere;
 }
 
 .modal-overlay {
@@ -738,5 +1085,9 @@ button:hover {
 
   .hero-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .number-strip {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
