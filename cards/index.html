@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5004CMD Data Science Revision Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <p class="eyebrow">5004CMD Revision</p>
+        <h1>Data Science Revision Lab</h1>
+        <p class="brand-copy">Flashcards, timed-style mock exams, and full answer history for the six exam datasets.</p>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-link active" data-view="dashboard">Dashboard</button>
+        <button class="nav-link" data-view="flashcards">Flashcards</button>
+        <button class="nav-link" data-view="exams">Mock Exams</button>
+        <button class="nav-link" data-view="history">Answered History</button>
+      </nav>
+
+      <div class="sidebar-panel">
+        <h2>What this site does</h2>
+        <ul>
+          <li>Builds revision prompts from the real CSV datasets in your exam folder.</li>
+          <li>Rotates questions so decks and exams do not repeat until a pool has been exhausted.</li>
+          <li>Marks mock exams immediately and stores your answers with the correct ones.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section id="dashboard" class="view active">
+        <header class="hero">
+          <div>
+            <p class="eyebrow">Study Dashboard</p>
+            <h2>Six datasets, one revision workflow</h2>
+            <p>Use the dashboard to review the dataset profiles first, then switch into flashcards or mock exams. Everything is stored locally in your browser for quick repetition.</p>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric-card">
+              <span id="metricDatasets">6</span>
+              <p>Datasets</p>
+            </div>
+            <div class="metric-card">
+              <span id="metricFlashcards">0</span>
+              <p>Flashcards Available</p>
+            </div>
+            <div class="metric-card">
+              <span id="metricExamQuestions">0</span>
+              <p>Exam Questions Available</p>
+            </div>
+          </div>
+        </header>
+
+        <div id="datasetGrid" class="dataset-grid"></div>
+      </section>
+
+      <section id="flashcards" class="view">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Flashcards</p>
+            <h2>Dataset-specific revision decks</h2>
+            <p>These flashcards focus on understanding the datasets, what they mean, what to look out for, and how to interpret them. They are revision-focused rather than code-writing drills.</p>
+          </div>
+        </header>
+
+        <div class="workspace-grid">
+          <div class="control-panel">
+            <h3>Create a deck</h3>
+            <label>
+              Dataset
+              <select id="flashcardDataset"></select>
+            </label>
+            <label>
+              Cards per deck
+              <input id="flashcardCount" type="number" min="6" max="20" value="12">
+            </label>
+            <button id="generateFlashcards" class="primary-btn">Generate flashcards</button>
+            <p class="small-note">Cards stay unique until the stored flashcard pool for that dataset has been fully used.</p>
+          </div>
+
+          <div class="study-panel">
+            <div id="flashcardEmpty" class="empty-state">
+              <h3>No deck loaded</h3>
+              <p>Choose a dataset and generate a deck to begin revising.</p>
+            </div>
+
+            <div id="flashcardSession" class="session hidden">
+              <div class="session-topbar">
+                <div>
+                  <h3 id="flashcardTitle">Flashcard Deck</h3>
+                  <p id="flashcardMeta" class="session-meta"></p>
+                  <div id="flashcardSeenNotice"></div>
+                </div>
+                <div class="progress-pill">
+                  <span id="flashcardProgress">1 / 12</span>
+                </div>
+              </div>
+
+              <div id="flashcardCard" class="flashcard-card">
+                <div class="card-face card-front">
+                  <p class="card-label">Question</p>
+                  <h4 id="flashcardQuestion"></h4>
+                </div>
+                <div id="flashcardAnswerWrap" class="card-face card-back hidden">
+                  <p class="card-label">Answer</p>
+                  <p id="flashcardAnswer"></p>
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button id="revealFlashcard" class="secondary-btn">Reveal answer</button>
+                <button id="markFlashcardRight" class="success-btn hidden">I got it right</button>
+                <button id="markFlashcardWrong" class="danger-btn hidden">I missed this</button>
+              </div>
+
+              <div class="button-row">
+                <button id="prevFlashcard" class="ghost-btn">Previous</button>
+                <button id="nextFlashcard" class="primary-btn">Next</button>
+                <button id="submitFlashcards" class="primary-btn hidden">Submit deck</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-panel">
+            <h3>Current deck review</h3>
+            <div id="flashcardReviewList" class="review-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="exams" class="view">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Mock Exams</p>
+            <h2>Auto-marked revision papers</h2>
+            <p>These mock exams are designed to feel closer to your recent mock paper: step-by-step pandas, cleaning, feature selection, model building, evaluation, plotting, and interpretation tasks based on the six datasets.</p>
+          </div>
+        </header>
+
+        <div class="workspace-grid exams-grid">
+          <div class="control-panel">
+            <h3>Create a mock exam</h3>
+            <label>
+              Dataset
+              <select id="examDataset"></select>
+            </label>
+            <label>
+              Questions per exam
+              <input id="examCount" type="number" min="6" max="14" value="10">
+            </label>
+            <button id="generateExam" class="primary-btn">Generate mock exam</button>
+            <p class="small-note">Each dataset has enough question coverage for repeated practice, with different question sets across attempts.</p>
+          </div>
+
+          <div class="study-panel exam-panel">
+            <div id="examEmpty" class="empty-state">
+              <h3>No exam loaded</h3>
+              <p>Generate a mock exam to start answering questions.</p>
+            </div>
+
+            <form id="examForm" class="hidden">
+              <div class="session-topbar">
+                <div>
+                  <h3 id="examTitle">Mock Exam</h3>
+                  <p id="examMeta" class="session-meta"></p>
+                </div>
+                <div class="progress-pill">
+                  <span id="examQuestionCount">10 questions</span>
+                </div>
+              </div>
+
+              <div id="examQuestions" class="exam-questions"></div>
+
+              <div class="button-row">
+                <button id="finishExam" type="submit" class="primary-btn">Finish and mark exam</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div id="examResults" class="results-panel hidden"></div>
+      </section>
+
+      <section id="history" class="view">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Answered History</p>
+            <h2>See what came up and how you responded</h2>
+            <p>Every flashcard session and exam attempt is stored locally with the questions shown, your answer, and the expected answer.</p>
+          </div>
+        </header>
+
+        <div class="workspace-grid history-grid">
+          <div class="control-panel">
+            <h3>Saved attempts</h3>
+            <label>
+              Filter
+              <select id="historyFilter">
+                <option value="all">All attempts</option>
+                <option value="flashcard">Flashcards only</option>
+                <option value="exam">Mock exams only</option>
+              </select>
+            </label>
+            <button id="clearHistory" class="ghost-btn">Clear saved history</button>
+          </div>
+
+          <div class="study-panel">
+            <div id="historyList" class="history-list"></div>
+          </div>
+
+          <div class="review-panel">
+            <h3>Attempt details</h3>
+            <div id="historyDetail" class="history-detail empty-state">
+              <p>Select an attempt to inspect its questions and answers.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="datasetModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Dataset Preview</p>
+          <h3 id="modalTitle">Dataset</h3>
+          <p id="modalMeta" class="session-meta"></p>
+        </div>
+        <button id="closeDatasetModal" class="ghost-btn">Close</button>
+      </div>
+      <div id="modalPreview" class="modal-preview"></div>
+    </div>
+  </div>
+
+  <script src="dataset-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
