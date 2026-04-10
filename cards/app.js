@@ -290,6 +290,7 @@ const flashcardCountInput = document.getElementById("flashcardCount");
 const examDatasetSelect = document.getElementById("examDataset");
 const examCountInput = document.getElementById("examCount");
 const flashcardEmpty = document.getElementById("flashcardEmpty");
+const flashcardLoading = document.getElementById("flashcardLoading");
 const flashcardSession = document.getElementById("flashcardSession");
 const flashcardTitle = document.getElementById("flashcardTitle");
 const flashcardMeta = document.getElementById("flashcardMeta");
@@ -299,6 +300,8 @@ const flashcardQuestion = document.getElementById("flashcardQuestion");
 const flashcardAnswer = document.getElementById("flashcardAnswer");
 const flashcardAnswerWrap = document.getElementById("flashcardAnswerWrap");
 const flashcardReviewList = document.getElementById("flashcardReviewList");
+const flashcardLoadingTitle = document.getElementById("flashcardLoadingTitle");
+const flashcardLoadingCopy = document.getElementById("flashcardLoadingCopy");
 const revealFlashcardBtn = document.getElementById("revealFlashcard");
 const markFlashcardRightBtn = document.getElementById("markFlashcardRight");
 const markFlashcardWrongBtn = document.getElementById("markFlashcardWrong");
@@ -322,6 +325,11 @@ const modalEyebrow = document.getElementById("modalEyebrow");
 const modalTitle = document.getElementById("modalTitle");
 const modalMeta = document.getElementById("modalMeta");
 const modalPreview = document.getElementById("modalPreview");
+const answersModal = document.getElementById("answersModal");
+const answersModalEyebrow = document.getElementById("answersModalEyebrow");
+const answersModalTitle = document.getElementById("answersModalTitle");
+const answersModalMeta = document.getElementById("answersModalMeta");
+const answersModalPreview = document.getElementById("answersModalPreview");
 const heroEyebrow = document.getElementById("heroEyebrow");
 const heroTitle = document.getElementById("heroTitle");
 const heroCopy = document.getElementById("heroCopy");
@@ -376,7 +384,7 @@ function bindEvents() {
     });
   });
 
-  document.getElementById("generateFlashcards").addEventListener("click", generateFlashcardDeck);
+  document.getElementById("generateFlashcards").addEventListener("click", handleGenerateFlashcards);
   revealFlashcardBtn.addEventListener("click", revealFlashcard);
   markFlashcardRightBtn.addEventListener("click", () => markFlashcard(true));
   markFlashcardWrongBtn.addEventListener("click", () => markFlashcard(false));
@@ -391,6 +399,24 @@ function bindEvents() {
   document.getElementById("closeDatasetModal").addEventListener("click", closeDatasetModal);
   datasetModal.addEventListener("click", (event) => {
     if (event.target === datasetModal) {
+      closeDatasetModal();
+    }
+  });
+  document.getElementById("closeAnswersModal").addEventListener("click", closeAnswersModal);
+  answersModal.addEventListener("click", (event) => {
+    if (event.target === answersModal) {
+      closeAnswersModal();
+    }
+  });
+  historyDetail.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-action='open-answers-modal']");
+    if (button) {
+      openAnswersModal(button.dataset.attemptId);
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeAnswersModal();
       closeDatasetModal();
     }
   });
@@ -455,20 +481,43 @@ function syncExamControls() {
 }
 
 async function handleGenerateExam() {
-  const showLoading = currentModuleId === "5002cmd" && examDatasetSelect.value === "actual-mock";
+  const selected = examDatasetSelect.value;
+  const isActualMock = selected === "actual-mock";
+  const scopeLabel = isActualMock
+    ? "actual mock exam"
+    : selected === "all"
+      ? `${getModule().allLabel.toLowerCase()} mock exam`
+      : `${getItem(selected).name} mock exam`;
   try {
-    if (showLoading) {
-      examEmpty.classList.add("hidden");
-      examForm.classList.add("hidden");
-      examResults.classList.add("hidden");
-      examLoading.classList.remove("hidden");
-      await new Promise((resolve) => setTimeout(resolve, 650));
-      examLoading.classList.add("hidden");
-    }
-
+    showExamLoading(
+      isActualMock ? "Creating actual mock" : "Creating mock exam",
+      isActualMock
+        ? currentModuleId === "5002cmd"
+          ? "Preparing one of the 8 mock papers."
+          : "Preparing the paper-style exam layout."
+        : `Preparing your ${scopeLabel}.`
+    );
+    await new Promise((resolve) => setTimeout(resolve, 650));
     generateExam();
   } finally {
-    examLoading.classList.add("hidden");
+    hideExamLoading();
+  }
+}
+
+async function handleGenerateFlashcards() {
+  const selected = flashcardDatasetSelect.value;
+  const scopeLabel = selected === "all"
+    ? getModule().allLabel.toLowerCase()
+    : getItem(selected).name;
+  try {
+    showFlashcardLoading(
+      "Creating flashcards",
+      `Preparing your ${scopeLabel} revision deck.`
+    );
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    generateFlashcardDeck();
+  } finally {
+    hideFlashcardLoading();
   }
 }
 
@@ -1032,6 +1081,18 @@ function generateFlashcardDeck() {
   setActiveView(currentViewId);
 }
 
+function showFlashcardLoading(title, copy) {
+  flashcardLoadingTitle.textContent = title;
+  flashcardLoadingCopy.textContent = copy;
+  flashcardEmpty.classList.add("hidden");
+  flashcardSession.classList.add("hidden");
+  flashcardLoading.classList.remove("hidden");
+}
+
+function hideFlashcardLoading() {
+  flashcardLoading.classList.add("hidden");
+}
+
 function renderFlashcard() {
   if (!currentFlashcardSession || currentFlashcardSession.cards.length === 0) {
     return;
@@ -1206,6 +1267,19 @@ function generateExam() {
   bindHintButtons();
   currentViewId = "exams";
   setActiveView(currentViewId);
+}
+
+function showExamLoading(title, copy) {
+  examEmpty.classList.add("hidden");
+  examForm.classList.add("hidden");
+  examResults.classList.add("hidden");
+  examLoading.querySelector("h3").textContent = title;
+  examLoading.querySelector("p").textContent = copy;
+  examLoading.classList.remove("hidden");
+}
+
+function hideExamLoading() {
+  examLoading.classList.add("hidden");
 }
 
 function buildActualMockExam(moduleId) {
@@ -1842,15 +1916,9 @@ function renderHistoryDetail(attemptId) {
       <h4>${escapeHtml(attempt.scopeName)}</h4>
       <p>Completed on ${formatDate(attempt.createdAt)}</p>
       <p>Score: ${attempt.score}/${attempt.total}</p>
-    </div>
-    <div class="review-list">
-      ${attempt.questions.map((question, index) => `
-        <article class="history-question ${question.correct ? "correct" : "incorrect"}">
-          <h4>${index + 1}. ${escapeHtml(question.prompt)}</h4>
-          ${renderAnswerBlock("Your answer:", question.userAnswer, question.kind)}
-          ${renderAnswerBlock("Correct answer:", question.correctAnswer, question.kind)}
-        </article>
-      `).join("")}
+      <button class="secondary-btn history-answers-btn" data-action="open-answers-modal" data-attempt-id="${attempt.id}">
+        Click to visualise answers
+      </button>
     </div>
   `;
 }
@@ -1898,12 +1966,46 @@ function openPreviewModal(itemId) {
   }
 
   datasetModal.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
+  updateBodyScrollLock();
 }
 
 function closeDatasetModal() {
   datasetModal.classList.add("hidden");
-  document.body.style.overflow = "";
+  updateBodyScrollLock();
+}
+
+function openAnswersModal(attemptId) {
+  const attempt = state.history.find((entry) => entry.id === attemptId);
+  if (!attempt) {
+    return;
+  }
+
+  answersModalEyebrow.textContent = attempt.type === "exam" ? "Mock Exam Review" : "Flashcard Review";
+  answersModalTitle.textContent = attempt.scopeName;
+  answersModalMeta.textContent = `Completed on ${formatDate(attempt.createdAt)}. Score ${attempt.score}/${attempt.total}.`;
+  answersModalPreview.innerHTML = `
+    <div class="review-list">
+      ${attempt.questions.map((question, index) => `
+        <article class="history-question ${question.correct ? "correct" : "incorrect"}">
+          <h4>${index + 1}. ${escapeHtml(question.prompt)}</h4>
+          ${renderAnswerBlock("Your answer:", question.userAnswer, question.kind)}
+          ${renderAnswerBlock("Correct answer:", question.correctAnswer, question.kind)}
+        </article>
+      `).join("")}
+    </div>
+  `;
+  answersModal.classList.remove("hidden");
+  updateBodyScrollLock();
+}
+
+function closeAnswersModal() {
+  answersModal.classList.add("hidden");
+  updateBodyScrollLock();
+}
+
+function updateBodyScrollLock() {
+  const hasOpenModal = !datasetModal.classList.contains("hidden") || !answersModal.classList.contains("hidden");
+  document.body.style.overflow = hasOpenModal ? "hidden" : "";
 }
 
 function renderSpreadsheet(profile) {

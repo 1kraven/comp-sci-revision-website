@@ -888,6 +888,10 @@ button:hover {
   min-width: 0;
 }
 
+.history-answers-btn {
+  margin-top: 14px;
+}
+
 .answer-block {
   margin: 10px 0 12px;
   min-width: 0;
@@ -983,6 +987,10 @@ button:hover {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
   display: grid;
   grid-template-rows: auto 1fr;
+}
+
+.modal-card-narrow {
+  width: min(980px, 100%);
 }
 
 .modal-header {
